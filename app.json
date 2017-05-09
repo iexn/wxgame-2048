@@ -1,12 +1,26 @@
 {
-  "pages":[
+  "pages": [
+    "pages/game-2048/index",
     "pages/index/index",
-    "pages/logs/logs"
+    "pages/logs/logs",
+    "pages/user/index"
   ],
-  "window":{
-    "backgroundTextStyle":"light",
+  "window": {
+    "backgroundTextStyle": "light",
     "navigationBarBackgroundColor": "#fff",
     "navigationBarTitleText": "WeChat",
-    "navigationBarTextStyle":"black"
+    "navigationBarTextStyle": "black"
+  },
+  "tabBar": {
+    "list": [
+      {
+        "pagePath": "pagePath",
+        "text": "text1"
+      },
+      {
+        "pagePath": "pagePath",
+        "text": "text2"
+      }
+    ]
   }
 }

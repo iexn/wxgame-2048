@@ -1,0 +1,4 @@
+<!--index.wxml-->
+<view class="user-info">
+  <text>index.wxml</text>
+</view>

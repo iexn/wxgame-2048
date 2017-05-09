@@ -1,0 +1,8 @@
+<!--index.wxml-->
+<canvas
+	canvas-id="wxgame"
+	bindtouchstart="touchStart"
+	bindtouchmove="touchMove"
+	bindtouchend="touchEnd"
+	bindtouchcancel="touchEnd"
+/>
