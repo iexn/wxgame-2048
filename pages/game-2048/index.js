@@ -26,6 +26,11 @@ Page({
 		// 生成初始布点
 		this.initMatrix()
 
+		// 添加一个初始数字
+		this.addItem()
+
+		// requestAnimationFrame(this.animation)
+
   },
 
 	// 初始化方阵
@@ -179,29 +184,213 @@ Page({
 		console.log(direction)
 
 		// 暂时不可再触发事件
-		// this.setData({
-		// 	pause: true
-		// })
+		this.setData({
+			pause: true
+		})
 
 		// TODO: 主要操作
 
 		// 执行动画
-		this.animation()
+		this.animation(direction)
 
 
 	},
 
 	// 执行动画
 	animation: function(direction) {
+		// requestAnimationFrame(this.animation)
 		switch(direction) {
 			case 'up':
+
+				break
 			case 'down':
 			case 'left':
 			case 'right':
-				break;
+				break
 			default:
 
 		}
+
+		this.saveMatrix(direction)
+
+		this.setData({
+			pause: false
+		})
+
+	},
+
+	// 保存矩阵结果
+	saveMatrix: function(direction) {
+		var matrix = this.data.matrix
+
+		// 是否阵列有所移动
+		var isMove = false
+
+		// 左右移动使用
+		var row0 = [matrix[0][0], matrix[0][1], matrix[0][2], matrix[0][3]]
+		var row1 = [matrix[1][0], matrix[1][1], matrix[1][2], matrix[1][3]]
+		var row2 = [matrix[2][0], matrix[2][1], matrix[2][2], matrix[2][3]]
+		var row3 = [matrix[3][0], matrix[3][1], matrix[3][2], matrix[3][3]]
+
+		// 上下移动使用
+		var col0 = [matrix[0][0], matrix[1][0], matrix[2][0], matrix[3][0]]
+		var col1 = [matrix[0][1], matrix[1][1], matrix[2][1], matrix[3][1]]
+		var col2 = [matrix[0][2], matrix[1][2], matrix[2][2], matrix[3][2]]
+		var col3 = [matrix[0][3], matrix[1][3], matrix[2][3], matrix[3][3]]
+
+		var move = true
+
+		switch(direction) {
+			case 'up':
+				move = this.moveMatrixRow(col0, 'front')
+				if(move !== false) {
+					if(!isMove) {
+						isMove = true
+					}
+					col0 = [].concat(move)
+				}
+				move = this.moveMatrixRow(col1, 'front')
+				if(move !== false) {
+					if(!isMove) {
+						isMove = true
+					}
+					col1 = [].concat(move)
+				}
+				move = this.moveMatrixRow(col2, 'front')
+				if(move !== false) {
+					if(!isMove) {
+						isMove = true
+					}
+					col2 = [].concat(move)
+				}
+				move = this.moveMatrixRow(col3, 'front')
+				if(move !== false) {
+					if(!isMove) {
+						isMove = true
+					}
+					col3 = [].concat(move)
+				}
+				this.setData({
+					matrix: [
+						[col0[0],col1[0],col2[0],col3[0]],
+						[col0[1],col1[1],col2[1],col3[1]],
+						[col0[2],col1[2],col2[2],col3[2]],
+						[col0[3],col1[3],col2[3],col3[3]],
+					]
+				})
+				break
+			case 'down':
+				move = this.moveMatrixRow(col0, 'behind')
+				if(move !== false) {
+					if(!isMove) {
+						isMove = true
+					}
+					col0 = [].concat(move)
+				}
+				move = this.moveMatrixRow(col1, 'behind')
+				if(move !== false) {
+					if(!isMove) {
+						isMove = true
+					}
+					col1 = [].concat(move)
+				}
+				move = this.moveMatrixRow(col2, 'behind')
+				if(move !== false) {
+					if(!isMove) {
+						isMove = true
+					}
+					col2 = [].concat(move)
+				}
+				move = this.moveMatrixRow(col3, 'behind')
+				if(move !== false) {
+					if(!isMove) {
+						isMove = true
+					}
+					col3 = [].concat(move)
+				}
+
+				this.setData({
+					matrix: [
+						[col0[0],col1[0],col2[0],col3[0]],
+						[col0[1],col1[1],col2[1],col3[1]],
+						[col0[2],col1[2],col2[2],col3[2]],
+						[col0[3],col1[3],col2[3],col3[3]],
+					]
+				})
+				
+				break
+			case 'left':
+			case 'right':
+				break
+			default:
+
+		}
+
+		if(isMove) {
+			this.addItem()
+		}
+
+	},
+
+	// 指定数组（单行），返回移动后的结果
+	// type 只能为 front前 或 behind 后
+	// 返回：true为阵列移动过，false为没有
+	moveMatrixRow: function(matrixRow, type) {
+		if(['front', 'behind'].indexOf(type) === -1) {
+			console.log("move error")
+			throw new error("moveMatrixRow's type error")
+			return false
+		}
+
+		if(type === 'behind') {
+			matrixRow = matrixRow.reverse()
+		}
+
+		var newRow = []
+
+		var matrixRowR = [...matrixRow, false]
+
+		matrixRowR.reduce(function(beforeVal, thisVal) {
+			// 如果为0，跳过处理
+			if(thisVal === 0) {
+				return beforeVal
+			}
+
+			if(beforeVal === false) {
+				return thisVal
+			}
+			// 最后一个值
+			if(thisVal === false && beforeVal !== 0) {
+				newRow.push(thisVal)
+				return false
+			}
+
+			if(beforeVal === thisVal) {
+				newRow.push(beforeVal + thisVal)
+				return false
+			} else {
+				newRow.push(beforeVal)
+				return thisVal
+			}
+
+			console.log(newRow)
+
+		}, false)
+
+		// 填补0
+		while(newRow.length < matrixSize) {
+			newRow.push(0)
+		}
+
+		if(newRow.join(',') === matrixRow.join(',')) {
+			return false
+		}
+
+		if(type === 'behind') {
+			newRow = newRow.reverse()
+		}
+
+		return newRow
 
 	},
 
